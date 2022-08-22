@@ -58,11 +58,11 @@ datasources:
   # <string> database name, if used
   database:
   # <bool> enable/disable basic auth
-  basicAuth: true
+  basicAuth:
   # <string> basic auth username
-  basicAuthUser: admin
+  basicAuthUser:
   # <string> basic auth password
-  basicAuthPassword: foobar
+  basicAuthPassword:
   # <bool> enable/disable with credentials headers
   withCredentials:
   # <bool> mark as default datasource. Max one per org
@@ -70,8 +70,8 @@ datasources:
   # <map> fields that will be converted to json and stored in json_data
   jsonData:
      graphiteVersion: "1.1"
-     tlsAuth: false
-     tlsAuthWithCACert: false
+     tlsAuth: true
+     tlsAuthWithCACert: true
   # <string> json object of data that will be encrypted.
   secureJsonData:
     tlsCACert: "..."
@@ -90,7 +90,6 @@ apiVersion: 1
 providers:
 - name: 'Prometheus'
   orgId: 1
-  folder: ''
   type: file
   disableDeletion: false
   editable: true
