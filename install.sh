@@ -1,11 +1,11 @@
 #!/bin/bash
 
-apt update &> /dev/null
+apt update
 
-bash ./bash/docker_install.sh &> /dev/null
+bash ./bash/docker_install.sh
 
 docker network create proxy_net
 
-bash ./bash/prometheus.sh &> /dev/null
-cp ./json/* /home/"${SUDO_USER:-$USER}"/docker/grafana/dashboards/
+bash ./bash/prometheus.sh
+cp ./json/* /home/"$USER"/docker/grafana/dashboards/
 bash ./bash/docker_compose.sh

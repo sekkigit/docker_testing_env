@@ -8,8 +8,7 @@
 </p>
 
 ```
-git clone https://github.com/sekkigit/docker_testing_env.git test-docker && cd test-docker
-sudo bash install.sh
+git clone https://github.com/sekkigit/docker_testing_env.git install && cd install && bash install.sh
 ```
 
 #### Install: 

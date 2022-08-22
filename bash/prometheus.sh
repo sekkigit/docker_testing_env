@@ -2,7 +2,7 @@
 
 IP=$(curl ifconfig.me)
 
-cat <<EOF > /home/"${SUDO_USER:-$USER}"/docker/prometheus/prometheus.yml
+cat <<EOF > /home/"$USER"/docker/prometheus/prometheus.yml
 global:
   scrape_interval:     15s # By default, scrape targets every 15 seconds.
 
@@ -27,9 +27,7 @@ scrape_configs:
       - targets: ['cadvisor:8080']
 EOF
 
-mkdir /home/"${SUDO_USER:-$USER}"/docker/grafana/datasources
-
-cat <<EOF > /home/"${SUDO_USER:-$USER}"/docker/grafana/datasources/datasource.yml
+cat <<EOF > /home/"$USER"/docker/grafana/datasources/datasource.yml
 # config file version
 apiVersion: 1
 
@@ -82,9 +80,7 @@ datasources:
   editable: true
 EOF
 
-mkdir /home/"${SUDO_USER:-$USER}"/docker/grafana/dashboards
-
-cat <<EOF > /home/"${SUDO_USER:-$USER}"/docker/grafana/dashboards/dashboard.yml
+cat <<EOF > /home/"$USER"/docker/grafana/dashboards/dashboard.yml
 apiVersion: 1
 
 providers:
