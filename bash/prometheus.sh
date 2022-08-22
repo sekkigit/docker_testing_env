@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IP=$(ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
+IP=$(curl ifconfig.me)
 
 cat <<EOF > /home/"${SUDO_USER:-$USER}"/docker/prometheus/prometheus.yml
 global:
