@@ -2,7 +2,7 @@
 ### Made for Ubuntu 22.04 LTS and 20.04
 
 
-#### This script is intended to quickly set up a Docker environment for testing containers.
+#### This script is intended to quickly set up a Docker environment for testing containers and monitor them with Grafana.
 
 <p align="right">COPY
 </p>

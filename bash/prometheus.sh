@@ -55,7 +55,7 @@ datasources:
   # <int> org id. will default to orgId 1 if not specified
   orgId: 1
   # <string> url
-  url: http://$IP:26504
+  url: http://$IP:26503
   # <string> database password, if used
   password:
   # <string> database user, if used
