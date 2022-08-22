@@ -1,10 +1,8 @@
-# Docker-compose Setup
+# Docker testing environment Setup
 ### Made for Ubuntu 22.04 LTS and 20.04
 
 
-#### This is a Docker setup that can be used with Ubuntu 20.04 and 22.04 LTS.
 #### This script is intended to quickly set up a Docker environment for testing containers.
-#### Run as normal user but apply "sudo" on a bash script.
 
 <p align="right">COPY
 </p>
@@ -25,8 +23,6 @@ sudo bash install.sh
 | Prometheuse | Monitoring system with a dimensional data model. |
 | cAdvisor | Performance characteristics of the running containers. |
 | node_exporter | Monitor the host system. |
-| filebrowser | File managing interface within a specified directory. |
-| cloudflare-ddns | Update dynamic DNS entries for accounts on various DNS providers. |
 
 <details><summary>Warning</summary>
 <p>
