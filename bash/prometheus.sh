@@ -94,6 +94,9 @@ providers:
   type: file
   disableDeletion: false
   editable: true
+  updateIntervalSeconds: 10
+  allowUiUpdates: true
   options:
     path: /etc/grafana/provisioning/dashboards
+    foldersFromFilesStructure: true
 EOF
