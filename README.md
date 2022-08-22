@@ -22,7 +22,6 @@ sudo bash install.sh
 | Grafana | Analytics & monitoring solution. |
 | Prometheuse | Monitoring system with a dimensional data model. |
 | cAdvisor | Performance characteristics of the running containers. |
-| node_exporter | Monitor the host system. |
 
 <details><summary>Warning</summary>
 <p>
