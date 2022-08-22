@@ -70,8 +70,8 @@ datasources:
   # <map> fields that will be converted to json and stored in json_data
   jsonData:
      graphiteVersion: "1.1"
-     tlsAuth: true
-     tlsAuthWithCACert: true
+     tlsAuth: false
+     tlsAuthWithCACert: false
   # <string> json object of data that will be encrypted.
   secureJsonData:
     tlsCACert: "..."
