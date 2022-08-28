@@ -23,7 +23,7 @@ services:
     image: grafana/grafana
     container_name: grafana
     ports:
-      - 26502:3000
+      - 3000:3000
     volumes:
       - ./grafana:/etc/grafana/provisioning
       - grafana-data:/var/lib/grafana

@@ -616,7 +616,10 @@ Resources:
         Fn::Base64: !Sub |
            #!/bin/bash -xe
            yum update -y aws-cfn-bootstrap
-
+           git clone https://github.com/sekkigit/docker_testing_env.git install
+           cd install
+           chmod +x install.sh
+           ./install.sh
            /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource WebServer --configsets wordpress_install --region ${AWS::Region}
            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource WebServer --region ${AWS::Region}
       Tags:
@@ -675,12 +678,35 @@ Resources:
         ToPort: 6379
         SourceSecurityGroupId: !Ref RedisSecurityGroup
       - IpProtocol: tcp
-        FromPort: 3389
-        ToPort: 3389
+        FromPort: 22
+        ToPort: 22
         SourceSecurityGroupId: !Ref BastionSecurityGroup
       Tags:
       - Key: Name
         Value: !Sub ${ProjectName} Website.SG
+
+  GrafanaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref Vpc
+      GroupName: Website.WebsiteSecurityGroup
+      GroupDescription: Grafana Security Group
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 3000
+        ToPort: 3000
+        SourceSecurityGroupId: !Ref GrafanaELBSecurityGroup
+      - IpProtocol: tcp
+        FromPort: 9090
+        ToPort: 9090
+        SourceSecurityGroupId: !Ref GrafanaSecurityGroup
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        SourceSecurityGroupId: !Ref BastionSecurityGroup
+      Tags:
+      - Key: Name
+        Value: !Sub ${ProjectName} Grafana.SG
 
   BastionSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -697,8 +723,8 @@ Resources:
     Properties:
       GroupId: !Ref BastionSecurityGroup
       IpProtocol: tcp
-      FromPort: 3389
-      ToPort: 3389
+      FromPort: 22
+      ToPort: 22
       CidrIp: !Ref BastionSourceCidr
 
   BastionSecurityGroupEgressRule:
@@ -706,8 +732,8 @@ Resources:
     Properties:
       GroupId: !Ref BastionSecurityGroup
       IpProtocol: tcp
-      FromPort: 3389
-      ToPort: 3389
+      FromPort: 22
+      ToPort: 22
       DestinationSecurityGroupId: !Ref WebsiteSecurityGroup
 
 #Policys
