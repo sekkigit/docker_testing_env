@@ -611,24 +611,33 @@ Resources:
         GroupSet:
         - !Ref BastionSecurityGroup
         SubnetId: !Ref PublicSubnetAZa
+      IamInstanceProfile: !Ref GrafanaInstanceProfile
       UserData:
         Fn::Base64: !Sub |
            #!/bin/bash -xe
            yum update -y aws-cfn-bootstrap
-           
+
            /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource WebServer --configsets wordpress_install --region ${AWS::Region}
            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource WebServer --region ${AWS::Region}
       Tags:
         - Key: Name
           Value: !Sub ${ProjectName} Grafana
 
- GrafanaEIP:
-    Type: AWS::EC2::EIP
-    Properties:
-      InstanceId: !Ref Grafana
-      Tags:
-        - Key: Name
-          Value: !Sub ${ProjectName} GrafanaEIP
+  GrafanaInstanceProfile:
+     Type: AWS::IAM::InstanceProfile
+     Properties: 
+       InstanceProfileName: Grafana-profile
+       Path: /
+       Roles: 
+        - !Ref GrafanaRole
+
+  GrafanaEIP:
+     Type: AWS::EC2::EIP
+     Properties:
+       InstanceId: !Ref Grafana
+       Tags:
+         - Key: Name
+           Value: !Sub ${ProjectName} GrafanaEIP
 
 #SecurityGroup
   WebsiteELBSecurityGroup:
@@ -736,7 +745,30 @@ Resources:
           Resource: "*"
       Roles: 
         - !Ref WebRole
-      
+
+  GrafanaPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub ${Environment}.GrafanaPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "cloudwatch:DescribeAlarmsForMetric"
+              - "cloudwatch:DescribeAlarmHistory"
+              - "cloudwatch:DescribeAlarms"
+              - "cloudwatch:ListMetrics"
+              - "cloudwatch:GetMetricData"
+              - "cloudwatch:GetInsightRuleReport"
+              - "ec2:DescribeTags"
+              - "ec2:DescribeInstances"
+              - "ec2:DescribeRegions"
+              - "tag:GetResources"
+            Resource: "*"
+      Roles:
+        - !Ref GrafanaRole
+
 # Role
   WebRole: 
     Type: AWS::IAM::Role
@@ -755,12 +787,31 @@ Resources:
       - Key: Name
         Value: !Sub ${ProjectName} WebRole
 
+  GrafanaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: grafana-role
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
 # IAM Profile
   WebIamProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Path: "/"
       Roles: [!Ref WebRole]
+
+  GrafanaIamProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles: [!Ref GrafanaRole]
 
 #Outputs
 Outputs:
