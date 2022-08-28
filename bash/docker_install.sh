@@ -1,8 +1,8 @@
 #!/bin/bash
 
-apt update
-apt install docker.io -y
-apt install docker-compose -y
+yum update
+yum install docker.io -y
+yum install docker-compose -y
 mkdir -p /home/"$USER"/docker/{portainer,grafana,prometheus,cadvisor}
 mkdir -p /home/"$USER"/docker/grafana{dashboards,datasources}
 groupadd --system dockergroup

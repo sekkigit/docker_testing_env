@@ -14,7 +14,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./portainer:/data
     ports:
-      - 26501:9000
+      - 9000:9000
     restart: unless-stopped
     networks:
       - proxy_net
@@ -35,7 +35,7 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     ports:
-      - 26503:9090
+      - 9090:9090
     volumes:
       - ./prometheus:/etc/prometheus
       - prometheus-data:/prometheus
