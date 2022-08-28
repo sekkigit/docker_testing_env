@@ -456,10 +456,14 @@ Resources:
       IamInstanceProfile: !Ref WebIamProfile
       UserData:
         Fn::Base64: !Sub |
-           #!/bin/bash -xe
-           yum update -y aws-cfn-bootstrap
-           /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource WebServer --configsets wordpress_install --region ${AWS::Region}
-           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource WebServer --region ${AWS::Region}
+          #!/bin/bash
+          sudo yum update -y
+          sudo amazon-linux-extras install nginx1 -y 
+          sudo systemctl enable nginx
+          sudo systemctl start nginx
+          sudo yum update -y aws-cfn-bootstrap
+          /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource WebServer --configsets wordpress_install --region ${AWS::Region}
+          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource WebServer --region ${AWS::Region}
 
 ## REDIS  
   RedisSubnetGroup:
@@ -517,14 +521,6 @@ Resources:
       SourceSecurityGroupId: !Ref WebsiteELBSecurityGroup
 
 #Bastion host
-  BastionInstanceProfile:
-     Type: AWS::IAM::InstanceProfile
-     Properties: 
-       InstanceProfileName: Bastion-profile
-       Path: /
-       Roles: 
-        - !Ref WebRole
-
   BastionA:
     Type: AWS::EC2::Instance
     Properties:
@@ -548,7 +544,7 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
            #!/bin/bash -xe
-           yum update -y aws-cfn-bootstrap
+           sudo yum update -y aws-cfn-bootstrap
            /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource WebServer --configsets wordpress_install --region ${AWS::Region}
            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource WebServer --region ${AWS::Region}
       Tags:
@@ -578,7 +574,7 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
            #!/bin/bash -xe
-           yum update -y aws-cfn-bootstrap
+           sudo yum update -y aws-cfn-bootstrap
            /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource WebServer --configsets wordpress_install --region ${AWS::Region}
            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource WebServer --region ${AWS::Region}
       Tags:
@@ -625,11 +621,11 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
            #!/bin/bash -xe
-           yum update -y aws-cfn-bootstrap
            git clone https://github.com/sekkigit/docker_testing_env.git install
            cd install
            chmod +x install.sh
            ./install.sh
+           sudo yum update -y aws-cfn-bootstrap
            /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource WebServer --configsets wordpress_install --region ${AWS::Region}
            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource WebServer --region ${AWS::Region}
       Tags:
