@@ -517,6 +517,14 @@ Resources:
       SourceSecurityGroupId: !Ref WebsiteELBSecurityGroup
 
 #Bastion host
+  BastionInstanceProfile:
+     Type: AWS::IAM::InstanceProfile
+     Properties: 
+       InstanceProfileName: Bastion-profile
+       Path: /
+       Roles: 
+        - !Ref WebRole
+
   BastionA:
     Type: AWS::EC2::Instance
     Properties:
@@ -530,6 +538,7 @@ Resources:
       InstanceType: !FindInMap [EnvMap, !Ref Environment, WebsiteInstanceType]
       InstanceInitiatedShutdownBehavior: stop
       DisableApiTermination: false
+      IamInstanceProfile: !Ref BastionInstanceProfile
       NetworkInterfaces:
       - AssociatePublicIpAddress: true
         DeviceIndex: "0"
@@ -559,6 +568,7 @@ Resources:
       InstanceType: !FindInMap [EnvMap, !Ref Environment, WebsiteInstanceType]
       InstanceInitiatedShutdownBehavior: stop
       DisableApiTermination: false
+      IamInstanceProfile: !Ref BastionInstanceProfile
       NetworkInterfaces:
       - AssociatePublicIpAddress: true
         DeviceIndex: "0"
@@ -609,7 +619,7 @@ Resources:
       - AssociatePublicIpAddress: true
         DeviceIndex: "0"
         GroupSet:
-        - !Ref BastionSecurityGroup
+        - !Ref GrafanaSecurityGroup
         SubnetId: !Ref PublicSubnetAZa
       IamInstanceProfile: !Ref GrafanaInstanceProfile
       UserData:
