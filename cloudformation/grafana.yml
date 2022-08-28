@@ -538,7 +538,7 @@ Resources:
       InstanceType: !FindInMap [EnvMap, !Ref Environment, WebsiteInstanceType]
       InstanceInitiatedShutdownBehavior: stop
       DisableApiTermination: false
-      IamInstanceProfile: !Ref BastionInstanceProfile
+      IamInstanceProfile: !Ref BastionIamProfile
       NetworkInterfaces:
       - AssociatePublicIpAddress: true
         DeviceIndex: "0"
@@ -568,7 +568,7 @@ Resources:
       InstanceType: !FindInMap [EnvMap, !Ref Environment, WebsiteInstanceType]
       InstanceInitiatedShutdownBehavior: stop
       DisableApiTermination: false
-      IamInstanceProfile: !Ref BastionInstanceProfile
+      IamInstanceProfile: !Ref BastionIamProfile
       NetworkInterfaces:
       - AssociatePublicIpAddress: true
         DeviceIndex: "0"
@@ -621,7 +621,7 @@ Resources:
         GroupSet:
         - !Ref GrafanaSecurityGroup
         SubnetId: !Ref PublicSubnetAZa
-      IamInstanceProfile: !Ref GrafanaInstanceProfile
+      IamInstanceProfile: !Ref GrafanaIamProfile
       UserData:
         Fn::Base64: !Sub |
            #!/bin/bash -xe
@@ -635,14 +635,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${ProjectName} Grafana
-
-  GrafanaInstanceProfile:
-     Type: AWS::IAM::InstanceProfile
-     Properties: 
-       InstanceProfileName: Grafana-profile
-       Path: /
-       Roles: 
-        - !Ref GrafanaRole
 
   GrafanaEIP:
      Type: AWS::EC2::EIP
@@ -763,6 +755,22 @@ Resources:
       Roles:
       - !Ref WebRole
 
+  BastionPolicy: 
+    Type: AWS::IAM::Policy
+    Properties: 
+      PolicyName: !Sub ${Environment}.BastionPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          Action:
+          -  "ec2:DescribeSecurityGroups"
+          -  "ec2:Describe*"
+          -  "ec2:Get*"
+          Resource: "*"
+      Roles:
+      - !Ref BastionRole
+
   CloudWatchPolicy: 
     Type: AWS::IAM::Policy
     Properties: 
@@ -823,6 +831,23 @@ Resources:
       - Key: Name
         Value: !Sub ${ProjectName} WebRole
 
+  BastionRole: 
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+        - Effect: Allow
+          Principal:
+            Service:
+            - "ec2.amazonaws.com"
+          Action:
+            - "sts:AssumeRole"
+      Path: "/"
+      Tags:
+      - Key: Name
+        Value: !Sub ${ProjectName} BastionRole
+
   GrafanaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -842,6 +867,12 @@ Resources:
     Properties:
       Path: "/"
       Roles: [!Ref WebRole]
+
+  BastionIamProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles: [!Ref BastionRole]
 
   GrafanaIamProfile:
     Type: AWS::IAM::InstanceProfile
