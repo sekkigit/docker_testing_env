@@ -8,7 +8,12 @@
 </p>
 
 ```
-git clone https://github.com/sekkigit/docker_testing_env.git install \ cd install \ chmod +x install.sh \ sudo ./install.sh
+#!/bin/bash
+
+sudo amazon-linux-extras install git
+git clone https://github.com/sekkigit/docker_testing_env.git install 
+cd install 
+sudo bash install.sh
 ```
 
 #### Install: 
