@@ -583,6 +583,7 @@ Resources:
 
   BastionEIP1:
     Type: AWS::EC2::EIP
+    DependsOn: VpcInternetGatewayAttachment
     Properties:
       InstanceId: !Ref BastionA
       Tags:
@@ -591,6 +592,7 @@ Resources:
 
   BastionEIP2:
     Type: AWS::EC2::EIP
+    DependsOn: VpcInternetGatewayAttachment
     Properties:
       InstanceId: !Ref BastionB
       Tags:
@@ -620,27 +622,28 @@ Resources:
       IamInstanceProfile: !Ref GrafanaIamProfile
       UserData:
         Fn::Base64: !Sub |
-           #!/bin/bash -xe
-           sudo yum update
-           sudo yum upgrade -y
-           sudo yum install git -y
-           git clone https://github.com/sekkigit/docker_testing_env.git install
-           cd install
-           sudo bash install.sh
-           sudo yum update -y aws-cfn-bootstrap
-           /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource WebServer --configsets wordpress_install --region ${AWS::Region}
-           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource WebServer --region ${AWS::Region}
+          #!/bin/bash -xe
+          sudo yum update
+          sudo yum upgrade -y
+          sudo yum install git -y
+          git clone https://github.com/sekkigit/docker_testing_env.git install
+          cd install
+          sudo bash install.sh
+          sudo yum update -y aws-cfn-bootstrap
+          /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource WebServer --configsets wordpress_install --region ${AWS::Region}
+          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource WebServer --region ${AWS::Region}
       Tags:
         - Key: Name
           Value: !Sub ${ProjectName} Grafana
 
   GrafanaEIP:
-     Type: AWS::EC2::EIP
-     Properties:
-       InstanceId: !Ref Grafana
-       Tags:
-         - Key: Name
-           Value: !Sub ${ProjectName} GrafanaEIP
+    Type: AWS::EC2::EIP
+    DependsOn: VpcInternetGatewayAttachment
+    Properties:
+      InstanceId: !Ref Grafana
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName} GrafanaEIP
 
 #SecurityGroup
   WebsiteELBSecurityGroup:
