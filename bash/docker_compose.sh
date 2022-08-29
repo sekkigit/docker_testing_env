@@ -1,24 +1,9 @@
 #!/bin/bash
 
-cat <<EOF > /home/"${SUDO_USER:-$USER}"/docker/docker-compose.yml
+cat <<EOF > /etc/docker/docker-compose.yml
 version: '3'
 
 services:
-  portainer:
-    image: portainer/portainer-ce
-    container_name: portainer
-    security_opt:
-      - no-new-privileges:true
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./portainer:/data
-    ports:
-      - 9000:9000
-    restart: unless-stopped
-    networks:
-      - proxy_net
-
   grafana:
     image: grafana/grafana
     container_name: grafana
@@ -71,4 +56,4 @@ volumes:
     driver: local
 EOF
 
-docker-compose -f /home/"${SUDO_USER:-$USER}"/docker/docker-compose.yml up -d
+docker-compose -f /etc/docker/docker-compose.yml up -d

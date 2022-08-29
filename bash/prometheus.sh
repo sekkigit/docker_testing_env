@@ -2,7 +2,7 @@
 
 IP=$(curl ifconfig.me)
 
-cat <<EOF > /home/"$USER"/docker/prometheus/prometheus.yml
+cat <<EOF > /etc/docker/prometheus/prometheus.yml
 global:
   scrape_interval:     15s # By default, scrape targets every 15 seconds.
 
@@ -27,7 +27,7 @@ scrape_configs:
       - targets: ['cadvisor:8080']
 EOF
 
-cat <<EOF > /home/"$USER"/docker/grafana/datasources/datasource.yml
+cat <<EOF > /etc/docker/grafana/datasources/datasource.yml
 # config file version
 apiVersion: 1
 
@@ -48,7 +48,7 @@ datasources:
   # <int> org id. will default to orgId 1 if not specified
   orgId: 1
   # <string> url
-  url: http://$IP:26503
+  url: http://$IP:9090
   # <string> database password, if used
   password:
   # <string> database user, if used
@@ -80,7 +80,7 @@ datasources:
   editable: true
 EOF
 
-cat <<EOF > /home/"$USER"/docker/grafana/dashboards/dashboard.yml
+cat <<EOF > /etc/docker/grafana/dashboards/dashboard.yml
 apiVersion: 1
 
 providers:
